@@ -1,0 +1,50 @@
+{% extends 'admin.twig' %}
+
+{% set title %}{{ 'CostAnalytics_CostManagement'|translate }}{% endset %}
+
+{% block content %}
+<div class="costAnalyticsIndex">
+    <h2>{{ 'CostAnalytics_CostManagement'|translate }}</h2>
+
+    <p class="description">
+        {{ 'CostAnalytics_CostManagementDescription'|translate }}
+    </p>
+
+    <div class="adminActions">
+        <a class="btn btn-primary" href="{{ linkTo({'module': 'CostAnalytics', 'action': 'importCost'}) }}">
+            <span class="icon-upload"></span>
+            {{ 'CostAnalytics_ImportCSV'|translate }}
+        </a>
+
+        <a class="btn" href="{{ linkTo({'module': 'CostAnalytics', 'action': 'addCost'}) }}">
+            <span class="icon-add"></span>
+            {{ 'CostAnalytics_AddManualCost'|translate }}
+        </a>
+    </div>
+
+    <h3>{{ 'CostAnalytics_AvailableChannels'|translate }}</h3>
+    <table class="entityTable dataTable">
+        <thead>
+            <tr>
+                <th>{{ 'CostAnalytics_ChannelType'|translate }}</th>
+                <th>{{ 'CostAnalytics_ChannelName'|translate }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for type, name in channelTypes %}
+            <tr>
+                <td><code>{{ type }}</code></td>
+                <td>{{ name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>{{ 'CostAnalytics_CSVFormat'|translate }}</h3>
+    <p>{{ 'CostAnalytics_CSVFormatDescription'|translate }}</p>
+    <pre>channel_type,cost_date,cost_amount,currency,campaign_name
+campaign,2024-01-01,150.00,USD,Summer Sale
+search,2024-01-01,200.00,USD,
+social,2024-01-02,75.50,USD,Facebook Promo</pre>
+</div>
+{% endblock %}

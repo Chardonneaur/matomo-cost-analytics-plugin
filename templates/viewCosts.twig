@@ -1,0 +1,26 @@
+{% extends 'dashboard.twig' %}
+
+{% block content %}
+<div class="costAnalyticsView">
+    <div id="CostAnalytics_costsByChannel"></div>
+    <div id="CostAnalytics_roiSummary"></div>
+</div>
+
+<script type="text/javascript">
+$(function() {
+    var costsByChannelWidget = widgetsHelper.loadWidgetIntoDiv(
+        '#CostAnalytics_costsByChannel',
+        'CostAnalytics',
+        'getCostsByChannel',
+        'CostAnalytics.getCostsByChannel'
+    );
+
+    var roiSummaryWidget = widgetsHelper.loadWidgetIntoDiv(
+        '#CostAnalytics_roiSummary',
+        'CostAnalytics',
+        'getROISummary',
+        'CostAnalytics.getROISummary'
+    );
+});
+</script>
+{% endblock %}

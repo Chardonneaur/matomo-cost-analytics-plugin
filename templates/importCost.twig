@@ -1,0 +1,74 @@
+{% extends 'admin.twig' %}
+
+{% set title %}{{ 'CostAnalytics_ImportCSV'|translate }}{% endset %}
+
+{% block content %}
+<div class="costAnalyticsImport">
+    <h2>{{ 'CostAnalytics_ImportCSV'|translate }}</h2>
+
+    <p class="description">
+        {{ 'CostAnalytics_ImportCSVDescription'|translate }}
+    </p>
+
+    <div class="alert alert-info">
+        <strong>{{ 'CostAnalytics_CSVFormat'|translate }}:</strong><br>
+        {{ 'CostAnalytics_RequiredColumns'|translate }}: <code>channel_type</code>, <code>cost_date</code>, <code>cost_amount</code><br>
+        {{ 'CostAnalytics_OptionalColumns'|translate }}: <code>currency</code> (default: USD), <code>campaign_name</code>
+    </div>
+
+    <form method="post" action="{{ linkTo({'module': 'CostAnalytics', 'action': 'uploadCsv'}) }}" enctype="multipart/form-data" class="form-horizontal">
+        <input type="hidden" name="idSite" value="{{ idSite }}">
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label" for="cost_csv">
+                {{ 'CostAnalytics_SelectCSVFile'|translate }}
+            </label>
+            <div class="col-sm-9">
+                <input type="file" name="cost_csv" id="cost_csv" accept=".csv" required class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-offset-3 col-sm-9">
+                <label class="checkbox">
+                    <input type="checkbox" name="delete_existing" value="1">
+                    {{ 'CostAnalytics_DeleteExistingCosts'|translate }}
+                </label>
+                <p class="form-text text-muted">
+                    {{ 'CostAnalytics_DeleteExistingCostsHelp'|translate }}
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" class="btn btn-primary">
+                    <span class="icon-upload"></span>
+                    {{ 'CostAnalytics_Upload'|translate }}
+                </button>
+                <a href="{{ linkTo({'module': 'CostAnalytics', 'action': 'index'}) }}" class="btn">
+                    {{ 'General_Cancel'|translate }}
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <h3>{{ 'CostAnalytics_ExampleCSV'|translate }}</h3>
+    <pre>channel_type,cost_date,cost_amount,currency,campaign_name
+campaign,2024-01-01,150.00,USD,Summer Sale
+campaign,2024-01-02,175.00,USD,Summer Sale
+search,2024-01-01,200.00,USD,Google Ads
+search,2024-01-02,220.00,USD,Google Ads
+social,2024-01-01,75.50,USD,Facebook Ads
+social,2024-01-02,80.00,USD,Facebook Ads
+direct,2024-01-01,0.00,USD,
+website,2024-01-01,50.00,USD,Affiliate Program</pre>
+
+    <h4>{{ 'CostAnalytics_ValidChannelTypes'|translate }}</h4>
+    <ul>
+        {% for type, name in channelTypes %}
+        <li><code>{{ type }}</code> - {{ name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

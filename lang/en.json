@@ -1,0 +1,63 @@
+{
+    "CostAnalytics": {
+        "PluginDescription": "Import cost data via CSV and calculate ROI metrics for marketing channels",
+
+        "CostManagement": "Cost Management",
+        "CostManagementDescription": "Manage your marketing cost data. Import costs via CSV or add them manually to track ROI across all channels.",
+        "CostROI": "Cost & ROI",
+
+        "ImportCSV": "Import CSV",
+        "ImportCSVDescription": "Upload a CSV file containing your marketing costs. The costs will be matched to channels and used for ROI calculations.",
+        "AddManualCost": "Add Manual Cost",
+        "AddManualCostDescription": "Add a single cost entry manually.",
+
+        "Channel": "Channel",
+        "ChannelType": "Channel Type",
+        "ChannelName": "Channel Name",
+        "SelectChannel": "-- Select Channel --",
+        "AvailableChannels": "Available Channels",
+
+        "Cost": "Cost",
+        "CostDate": "Date",
+        "CostAmount": "Amount",
+        "Currency": "Currency",
+        "CampaignName": "Campaign Name",
+        "CampaignNameHelp": "Optional. Used to further categorize costs within a channel.",
+
+        "Revenue": "Revenue",
+        "Profit": "Profit",
+        "ROI": "ROI",
+        "TotalCost": "Total Cost",
+        "TotalRevenue": "Total Revenue",
+        "Summary": "Summary",
+
+        "CostByChannel": "Cost by Channel",
+        "CostByChannelDocumentation": "This report shows the marketing costs and ROI for each acquisition channel.",
+        "ROISummary": "ROI Summary",
+        "ROISummaryDocumentation": "This report shows the overall return on investment across all marketing channels.",
+
+        "CSVFormat": "CSV Format",
+        "CSVFormatDescription": "Your CSV file must include the following columns:",
+        "RequiredColumns": "Required columns",
+        "OptionalColumns": "Optional columns",
+        "ExampleCSV": "Example CSV",
+        "ValidChannelTypes": "Valid Channel Types",
+        "SelectCSVFile": "Select CSV File",
+
+        "DeleteExistingCosts": "Replace existing costs for the same dates",
+        "DeleteExistingCostsHelp": "If checked, existing cost entries for the same date range will be removed before importing.",
+
+        "Upload": "Upload",
+        "AddCost": "Add Cost",
+        "CostAdded": "Cost entry added successfully.",
+
+        "ImportSuccess": "Successfully imported %s cost entries.",
+        "ImportWarnings": "%s rows had errors and were skipped.",
+        "ImportFailed": "Import failed",
+        "ImportError": "Error importing costs",
+
+        "NoFileUploaded": "No file was uploaded.",
+        "EmptyFile": "The uploaded file is empty.",
+        "InvalidInput": "Please fill in all required fields with valid values."
+    }
+}

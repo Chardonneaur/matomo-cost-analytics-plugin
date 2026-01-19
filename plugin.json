@@ -1,0 +1,21 @@
+{
+    "name": "CostAnalytics",
+    "description": "Import cost data via CSV and calculate ROI metrics for marketing channels",
+    "version": "1.0.0",
+    "theme": false,
+    "require": {
+        "piwik": ">=5.0.0,<6.0.0"
+    },
+    "authors": [
+        {
+            "name": "Custom Development",
+            "homepage": "https://matomo.org"
+        }
+    ],
+    "license": "GPL v3+",
+    "homepage": "https://matomo.org",
+    "keywords": ["cost", "roi", "marketing", "campaigns", "csv", "import"],
+    "archive": {
+        "exclude": ["/Tests"]
+    }
+}
