@@ -71,12 +71,13 @@ direct,2024-01-01,0.00,USD,
 
 1. Go to **Administration > Measurables > Cost Management**
 2. Click **Add Manual Cost**
-3. Fill in the form:
+3. **Select the target website** from the dropdown (you can add costs to any site you have admin access to)
+4. Fill in the form:
    - Select the channel type
    - Choose the date
    - Enter the cost amount
    - Optionally specify currency and campaign name
-4. Click **Add Cost**
+5. Click **Add Cost**
 
 ### Viewing Reports
 

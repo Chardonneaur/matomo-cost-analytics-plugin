@@ -111,9 +111,12 @@ class Controller extends PluginController
     {
         Piwik::checkUserHasAdminAccess($this->idSite);
 
+        $sitesWithAdminAccess = SitesManagerAPI::getInstance()->getSitesWithAdminAccess();
+
         return $this->renderTemplate('addCost', [
             'channelTypes' => Model::$channelTypes,
             'idSite' => $this->idSite,
+            'sitesWithAdminAccess' => $sitesWithAdminAccess,
         ]);
     }
 
@@ -127,6 +130,12 @@ class Controller extends PluginController
         $notification = null;
 
         try {
+            // Get target site ID from form, default to current site
+            $targetIdSite = Common::getRequestVar('target_idsite', $this->idSite, 'int');
+
+            // Verify user has admin access to target site
+            Piwik::checkUserHasAdminAccess($targetIdSite);
+
             $channelType = Common::getRequestVar('channel_type', '', 'string');
             $costDate = Common::getRequestVar('cost_date', '', 'string');
             $costAmount = Common::getRequestVar('cost_amount', 0, 'float');
@@ -138,7 +147,7 @@ class Controller extends PluginController
             }
 
             $api = API::getInstance();
-            $api->addCost($this->idSite, $channelType, $costDate, $costAmount, $currency, $campaignName ?: null);
+            $api->addCost($targetIdSite, $channelType, $costDate, $costAmount, $currency, $campaignName ?: null);
 
             $notification = new Notification(Piwik::translate('CostAnalytics_CostAdded'));
             $notification->context = Notification::CONTEXT_SUCCESS;

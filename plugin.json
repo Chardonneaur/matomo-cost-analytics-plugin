@@ -1,7 +1,7 @@
 {
     "name": "CostAnalytics",
     "description": "Import cost data via CSV and calculate ROI metrics for marketing channels",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "theme": false,
     "require": {
         "piwik": ">=5.0.0,<6.0.0"
