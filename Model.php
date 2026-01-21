@@ -193,9 +193,11 @@ class Model
             $orderBy = 'cost_date';
         }
         $orderDir = strtoupper($orderDir) === 'ASC' ? 'ASC' : 'DESC';
+        $limit = (int)$limit;
+        $offset = (int)$offset;
 
-        $query = 'SELECT * FROM ' . $this->table . ' WHERE idsite = ? AND deleted = 0 ORDER BY ' . $orderBy . ' ' . $orderDir . ' LIMIT ? OFFSET ?';
-        return Db::fetchAll($query, [$idSite, (int)$limit, (int)$offset]);
+        $query = 'SELECT * FROM ' . $this->table . ' WHERE idsite = ? AND deleted = 0 ORDER BY ' . $orderBy . ' ' . $orderDir . ' LIMIT ' . $limit . ' OFFSET ' . $offset;
+        return Db::fetchAll($query, [$idSite]);
     }
 
     /**
