@@ -17,11 +17,16 @@ class Menu extends PluginMenu
 {
     public function configureAdminMenu(MenuAdmin $menu)
     {
-        if (Piwik::hasUserSuperUserAccess()) {
+        if (Piwik::isUserHasAdminAccess()) {
             $menu->addMeasurableItem(
                 'CostAnalytics_CostManagement',
                 $this->urlForAction('index'),
                 $order = 50
+            );
+            $menu->addMeasurableItem(
+                'CostAnalytics_ManageCosts',
+                $this->urlForAction('manageCosts'),
+                $order = 51
             );
         }
     }

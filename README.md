@@ -7,6 +7,7 @@ Import marketing cost data via CSV and calculate ROI metrics for your acquisitio
 - **CSV Import**: Upload cost data in bulk via CSV files
 - **Per-Website Import**: Import costs to any website you have admin access to, not just the current site
 - **Manual Entry**: Add individual cost entries through the admin interface
+- **Manage Costs**: View, edit, and delete all imported cost entries with description support
 - **Channel Mapping**: Costs are mapped to Matomo's acquisition channels (Direct, Search, Social, Campaigns, Websites)
 - **ROI Calculation**: Automatic ROI calculation based on goal revenue: `ROI = ((Revenue - Cost) / Cost) × 100`
 - **Reports**: View cost and ROI metrics by channel in the Acquisition section
@@ -42,6 +43,7 @@ Your CSV file must include the following columns:
 | `cost_amount` | Yes | Cost amount (decimal number) |
 | `currency` | No | Currency code (default: USD) |
 | `campaign_name` | No | Optional campaign identifier |
+| `description` | No | Optional notes or details about the cost entry |
 
 #### Valid Channel Types
 
@@ -56,15 +58,15 @@ Your CSV file must include the following columns:
 #### Example CSV
 
 ```csv
-channel_type,cost_date,cost_amount,currency,campaign_name
-campaign,2024-01-01,150.00,USD,Summer Sale
-campaign,2024-01-02,175.00,USD,Summer Sale
-search,2024-01-01,200.00,USD,Google Ads
-search,2024-01-02,220.00,USD,Google Ads
-social,2024-01-01,75.50,USD,Facebook Ads
-social,2024-01-02,80.00,USD,Instagram Ads
-website,2024-01-01,50.00,USD,Affiliate Program
-direct,2024-01-01,0.00,USD,
+channel_type,cost_date,cost_amount,currency,campaign_name,description
+campaign,2024-01-01,150.00,USD,Summer Sale,Facebook campaign for summer promotion
+campaign,2024-01-02,175.00,USD,Summer Sale,Increased budget for weekend
+search,2024-01-01,200.00,USD,Google Ads,Brand keywords campaign
+search,2024-01-02,220.00,USD,Google Ads,Added new ad groups
+social,2024-01-01,75.50,USD,Facebook Ads,Awareness campaign
+social,2024-01-02,80.00,USD,Instagram Ads,Retargeting ads
+website,2024-01-01,50.00,USD,Affiliate Program,Monthly affiliate fees
+direct,2024-01-01,0.00,USD,,
 ```
 
 ### Adding Costs Manually
@@ -76,8 +78,19 @@ direct,2024-01-01,0.00,USD,
    - Select the channel type
    - Choose the date
    - Enter the cost amount
-   - Optionally specify currency and campaign name
+   - Optionally specify currency, campaign name, and description
 5. Click **Add Cost**
+
+### Managing Costs
+
+1. Go to **Administration > Measurables > Manage Costs**
+2. Select the website to view costs for from the dropdown
+3. View all imported cost entries in a table with:
+   - Date, channel type, campaign name, description
+   - Cost amount and currency
+   - Edit and delete buttons for each entry
+4. Click **Edit** to modify a cost entry
+5. Click **Delete** to remove a cost entry (with confirmation)
 
 ### Viewing Reports
 
@@ -110,7 +123,22 @@ The plugin provides API methods for programmatic access:
 
 ### Add Single Cost Entry
 ```
-?module=API&method=CostAnalytics.addCost&idSite=1&channelType=campaign&costDate=2024-01-01&costAmount=100&currency=USD&format=json
+?module=API&method=CostAnalytics.addCost&idSite=1&channelType=campaign&costDate=2024-01-01&costAmount=100&currency=USD&description=My%20campaign&format=json
+```
+
+### Update Cost Entry
+```
+?module=API&method=CostAnalytics.updateCost&idSite=1&idCost=123&costAmount=150&description=Updated%20description&format=json
+```
+
+### Delete Cost Entry
+```
+?module=API&method=CostAnalytics.deleteCost&idSite=1&idCost=123&format=json
+```
+
+### Get All Costs (for management)
+```
+?module=API&method=CostAnalytics.getAllCosts&idSite=1&limit=100&offset=0&format=json
 ```
 
 ### Get Available Channel Types

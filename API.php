@@ -150,9 +150,10 @@ class API extends PluginAPI
      * @param float $costAmount
      * @param string $currency
      * @param string|null $campaignName
+     * @param string|null $description
      * @return int
      */
-    public function addCost($idSite, $channelType, $costDate, $costAmount, $currency = 'USD', $campaignName = null)
+    public function addCost($idSite, $channelType, $costDate, $costAmount, $currency = 'USD', $campaignName = null, $description = null)
     {
         Piwik::checkUserHasAdminAccess($idSite);
 
@@ -167,14 +168,111 @@ class API extends PluginAPI
             throw new \Exception('Cost amount cannot be negative');
         }
 
-        return $this->model->insertCost($idSite, $channelType, $costDate, $costAmount, $currency, $campaignName);
+        return $this->model->insertCost($idSite, $channelType, $costDate, $costAmount, $currency, $campaignName, $description);
+    }
+
+    /**
+     * Update a cost entry
+     *
+     * @param int $idSite
+     * @param int $idCost
+     * @param string|null $channelType
+     * @param string|null $costDate
+     * @param float|null $costAmount
+     * @param string|null $currency
+     * @param string|null $campaignName
+     * @param string|null $description
+     * @return bool
+     */
+    public function updateCost($idSite, $idCost, $channelType = null, $costDate = null, $costAmount = null, $currency = null, $campaignName = null, $description = null)
+    {
+        Piwik::checkUserHasAdminAccess($idSite);
+
+        $cost = $this->model->getCost($idCost);
+        if (!$cost || $cost['idsite'] != $idSite) {
+            throw new \Exception('Cost entry not found');
+        }
+
+        $data = [];
+
+        if ($channelType !== null) {
+            if (!Model::isValidChannelType($channelType)) {
+                throw new \Exception('Invalid channel type. Valid types: ' . implode(', ', array_keys(Model::$channelTypes)));
+            }
+            $data['channel_type'] = $channelType;
+        }
+
+        if ($costDate !== null) {
+            $data['cost_date'] = Date::factory($costDate)->toString('Y-m-d');
+        }
+
+        if ($costAmount !== null) {
+            $costAmount = (float)$costAmount;
+            if ($costAmount < 0) {
+                throw new \Exception('Cost amount cannot be negative');
+            }
+            $data['cost_amount'] = $costAmount;
+        }
+
+        if ($currency !== null) {
+            $data['currency'] = $currency;
+        }
+
+        if ($campaignName !== null) {
+            $data['campaign_name'] = $campaignName ?: null;
+        }
+
+        if ($description !== null) {
+            $data['description'] = $description ?: null;
+        }
+
+        if (!empty($data)) {
+            $this->model->updateCost($idCost, $data);
+        }
+
+        return true;
+    }
+
+    /**
+     * Get all costs for a site (for management view)
+     *
+     * @param int $idSite
+     * @param int $limit
+     * @param int $offset
+     * @return DataTable
+     */
+    public function getAllCosts($idSite, $limit = 100, $offset = 0)
+    {
+        Piwik::checkUserHasAdminAccess($idSite);
+
+        $costs = $this->model->getAllCostsForSite($idSite, $limit, $offset);
+        $totalCount = $this->model->countCostsForSite($idSite);
+
+        $dataTable = new DataTable();
+        $dataTable->setMetadata('total_count', $totalCount);
+
+        foreach ($costs as $cost) {
+            $row = new Row();
+            $row->setColumn('idcost', $cost['idcost']);
+            $row->setColumn('label', $cost['cost_date']);
+            $row->setColumn('channel_type', $cost['channel_type']);
+            $row->setColumn('channel_label', Model::getChannelLabel($cost['channel_type']));
+            $row->setColumn('campaign_name', $cost['campaign_name']);
+            $row->setColumn('description', $cost['description']);
+            $row->setColumn('cost', (float)$cost['cost_amount']);
+            $row->setColumn('currency', $cost['currency']);
+            $row->setColumn('ts_created', $cost['ts_created']);
+            $dataTable->addRow($row);
+        }
+
+        return $dataTable;
     }
 
     /**
      * Import costs from CSV data
      *
      * Expected CSV format:
-     * channel_type,cost_date,cost_amount,currency,campaign_name (optional)
+     * channel_type,cost_date,cost_amount,currency,campaign_name,description (optional columns)
      *
      * @param int $idSite
      * @param string $csvData
@@ -245,6 +343,7 @@ class API extends PluginAPI
                 'cost_amount' => $costAmount,
                 'currency' => $row['currency'] ?? 'USD',
                 'campaign_name' => $row['campaign_name'] ?? null,
+                'description' => $row['description'] ?? null,
             ];
         }
 

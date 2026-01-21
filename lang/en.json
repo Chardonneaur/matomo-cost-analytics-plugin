@@ -23,6 +23,8 @@
         "Currency": "Currency",
         "CampaignName": "Campaign Name",
         "CampaignNameHelp": "Optional. Used to further categorize costs within a channel.",
+        "Description": "Description",
+        "DescriptionHelp": "Optional. Add notes or details about this cost entry.",
 
         "Revenue": "Revenue",
         "Profit": "Profit",
@@ -61,6 +63,17 @@
 
         "NoFileUploaded": "No file was uploaded.",
         "EmptyFile": "The uploaded file is empty.",
-        "InvalidInput": "Please fill in all required fields with valid values."
+        "InvalidInput": "Please fill in all required fields with valid values.",
+
+        "ManageCosts": "Manage Costs",
+        "ManageCostsDescription": "View, edit, and delete all your imported cost entries.",
+        "FilterByWebsite": "Filter by website",
+        "NoCostsFound": "No cost entries found for this website.",
+        "TotalCostEntries": "Total cost entries",
+        "EditCost": "Edit Cost",
+        "CostUpdated": "Cost entry updated successfully.",
+        "CostDeleted": "Cost entry deleted successfully.",
+        "CostNotFound": "Cost entry not found.",
+        "ConfirmDelete": "Are you sure you want to delete this cost entry?"
     }
 }

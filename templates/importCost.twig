@@ -13,7 +13,7 @@
     <div class="alert alert-info">
         <strong>{{ 'CostAnalytics_CSVFormat'|translate }}:</strong><br>
         {{ 'CostAnalytics_RequiredColumns'|translate }}: <code>channel_type</code>, <code>cost_date</code>, <code>cost_amount</code><br>
-        {{ 'CostAnalytics_OptionalColumns'|translate }}: <code>currency</code> (default: USD), <code>campaign_name</code>
+        {{ 'CostAnalytics_OptionalColumns'|translate }}: <code>currency</code> (default: USD), <code>campaign_name</code>, <code>description</code>
     </div>
 
     <form method="post" action="{{ linkTo({'module': 'CostAnalytics', 'action': 'uploadCsv'}) }}" enctype="multipart/form-data" class="form-horizontal">
@@ -70,15 +70,15 @@
     </form>
 
     <h3>{{ 'CostAnalytics_ExampleCSV'|translate }}</h3>
-    <pre>channel_type,cost_date,cost_amount,currency,campaign_name
-campaign,2024-01-01,150.00,USD,Summer Sale
-campaign,2024-01-02,175.00,USD,Summer Sale
-search,2024-01-01,200.00,USD,Google Ads
-search,2024-01-02,220.00,USD,Google Ads
-social,2024-01-01,75.50,USD,Facebook Ads
-social,2024-01-02,80.00,USD,Facebook Ads
-direct,2024-01-01,0.00,USD,
-website,2024-01-01,50.00,USD,Affiliate Program</pre>
+    <pre>channel_type,cost_date,cost_amount,currency,campaign_name,description
+campaign,2024-01-01,150.00,USD,Summer Sale,Facebook campaign for summer promotion
+campaign,2024-01-02,175.00,USD,Summer Sale,Increased budget for weekend
+search,2024-01-01,200.00,USD,Google Ads,Brand keywords campaign
+search,2024-01-02,220.00,USD,Google Ads,Added new ad groups
+social,2024-01-01,75.50,USD,Facebook Ads,Awareness campaign
+social,2024-01-02,80.00,USD,Facebook Ads,Retargeting ads
+direct,2024-01-01,0.00,USD,,
+website,2024-01-01,50.00,USD,Affiliate Program,Monthly affiliate fees</pre>
 
     <h4>{{ 'CostAnalytics_ValidChannelTypes'|translate }}</h4>
     <ul>

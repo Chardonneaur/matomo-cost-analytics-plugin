@@ -98,12 +98,13 @@ class Model
     /**
      * Insert a single cost entry
      */
-    public function insertCost($idSite, $channelType, $costDate, $costAmount, $currency = 'USD', $campaignName = null)
+    public function insertCost($idSite, $channelType, $costDate, $costAmount, $currency = 'USD', $campaignName = null, $description = null)
     {
         $data = [
             'idsite' => $idSite,
             'channel_type' => $channelType,
             'campaign_name' => $campaignName,
+            'description' => $description,
             'cost_date' => $costDate,
             'cost_amount' => $costAmount,
             'currency' => $currency,
@@ -128,7 +129,8 @@ class Model
                     $cost['cost_date'],
                     $cost['cost_amount'],
                     $cost['currency'] ?? 'USD',
-                    $cost['campaign_name'] ?? null
+                    $cost['campaign_name'] ?? null,
+                    $cost['description'] ?? null
                 );
                 $inserted++;
             } catch (\Exception $e) {
@@ -182,6 +184,30 @@ class Model
     }
 
     /**
+     * Get all costs for a site (for management view)
+     */
+    public function getAllCostsForSite($idSite, $limit = 100, $offset = 0, $orderBy = 'cost_date', $orderDir = 'DESC')
+    {
+        $allowedOrderBy = ['cost_date', 'channel_type', 'cost_amount', 'campaign_name', 'ts_created'];
+        if (!in_array($orderBy, $allowedOrderBy)) {
+            $orderBy = 'cost_date';
+        }
+        $orderDir = strtoupper($orderDir) === 'ASC' ? 'ASC' : 'DESC';
+
+        $query = 'SELECT * FROM ' . $this->table . ' WHERE idsite = ? AND deleted = 0 ORDER BY ' . $orderBy . ' ' . $orderDir . ' LIMIT ? OFFSET ?';
+        return Db::fetchAll($query, [$idSite, (int)$limit, (int)$offset]);
+    }
+
+    /**
+     * Count all costs for a site
+     */
+    public function countCostsForSite($idSite)
+    {
+        $query = 'SELECT COUNT(*) FROM ' . $this->table . ' WHERE idsite = ? AND deleted = 0';
+        return (int)Db::fetchOne($query, [$idSite]);
+    }
+
+    /**
      * Check if channel type is valid
      */
     public static function isValidChannelType($channelType)
@@ -206,6 +232,7 @@ class Model
                   `idsite` INT(11) NOT NULL,
                   `channel_type` VARCHAR(50) NOT NULL,
                   `campaign_name` VARCHAR(255) DEFAULT NULL,
+                  `description` TEXT DEFAULT NULL,
                   `cost_date` DATE NOT NULL,
                   `cost_amount` DECIMAL(15,4) NOT NULL DEFAULT 0,
                   `currency` VARCHAR(10) DEFAULT 'USD',
@@ -218,6 +245,25 @@ class Model
                   INDEX `idx_site_channel_date` (`idsite`, `channel_type`, `cost_date`)";
 
         DbHelper::createTable(self::$rawPrefix, $tableDefinition);
+
+        // Add description column if upgrading from older version
+        self::addDescriptionColumnIfMissing();
+    }
+
+    /**
+     * Add description column for existing installations
+     */
+    private static function addDescriptionColumnIfMissing()
+    {
+        $table = Common::prefixTable(self::$rawPrefix);
+        try {
+            $columns = Db::fetchAll("SHOW COLUMNS FROM $table LIKE 'description'");
+            if (empty($columns)) {
+                Db::exec("ALTER TABLE $table ADD COLUMN `description` TEXT DEFAULT NULL AFTER `campaign_name`");
+            }
+        } catch (\Exception $e) {
+            // Table might not exist yet, ignore
+        }
     }
 
     /**

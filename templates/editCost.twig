@@ -1,0 +1,86 @@
+{% extends 'admin.twig' %}
+
+{% set title %}{{ 'CostAnalytics_EditCost'|translate }}{% endset %}
+
+{% block content %}
+<div class="costAnalyticsEditCost">
+    <h2>{{ 'CostAnalytics_EditCost'|translate }}</h2>
+
+    <form method="post" action="{{ linkTo({'module': 'CostAnalytics', 'action': 'updateCost'}) }}" class="form-horizontal">
+        <input type="hidden" name="idCost" value="{{ cost.idcost }}">
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label" for="channel_type">
+                {{ 'CostAnalytics_ChannelType'|translate }} *
+            </label>
+            <div class="col-sm-9">
+                <select name="channel_type" id="channel_type" required class="form-control">
+                    {% for type, name in channelTypes %}
+                    <option value="{{ type }}" {% if type == cost.channel_type %}selected{% endif %}>{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label" for="cost_date">
+                {{ 'CostAnalytics_CostDate'|translate }} *
+            </label>
+            <div class="col-sm-9">
+                <input type="date" name="cost_date" id="cost_date" required class="form-control" value="{{ cost.cost_date }}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label" for="cost_amount">
+                {{ 'CostAnalytics_CostAmount'|translate }} *
+            </label>
+            <div class="col-sm-9">
+                <input type="number" name="cost_amount" id="cost_amount" step="0.01" min="0" required class="form-control" value="{{ cost.cost_amount }}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label" for="currency">
+                {{ 'CostAnalytics_Currency'|translate }}
+            </label>
+            <div class="col-sm-9">
+                <input type="text" name="currency" id="currency" maxlength="10" class="form-control" value="{{ cost.currency }}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label" for="campaign_name">
+                {{ 'CostAnalytics_CampaignName'|translate }}
+            </label>
+            <div class="col-sm-9">
+                <input type="text" name="campaign_name" id="campaign_name" maxlength="255" class="form-control" value="{{ cost.campaign_name }}">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 control-label" for="description">
+                {{ 'CostAnalytics_Description'|translate }}
+            </label>
+            <div class="col-sm-9">
+                <textarea name="description" id="description" rows="3" class="form-control" maxlength="1000">{{ cost.description }}</textarea>
+                <p class="form-text text-muted">
+                    {{ 'CostAnalytics_DescriptionHelp'|translate }}
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-offset-3 col-sm-9">
+                <button type="submit" class="btn btn-primary">
+                    <span class="icon-save"></span>
+                    {{ 'General_Save'|translate }}
+                </button>
+                <a href="{{ linkTo({'module': 'CostAnalytics', 'action': 'manageCosts'}) }}" class="btn">
+                    {{ 'General_Cancel'|translate }}
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

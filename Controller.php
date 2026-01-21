@@ -141,13 +141,14 @@ class Controller extends PluginController
             $costAmount = Common::getRequestVar('cost_amount', 0, 'float');
             $currency = Common::getRequestVar('currency', 'USD', 'string');
             $campaignName = Common::getRequestVar('campaign_name', '', 'string');
+            $description = Common::getRequestVar('description', '', 'string');
 
             if (empty($channelType) || empty($costDate) || $costAmount <= 0) {
                 throw new \Exception(Piwik::translate('CostAnalytics_InvalidInput'));
             }
 
             $api = API::getInstance();
-            $api->addCost($targetIdSite, $channelType, $costDate, $costAmount, $currency, $campaignName ?: null);
+            $api->addCost($targetIdSite, $channelType, $costDate, $costAmount, $currency, $campaignName ?: null, $description ?: null);
 
             $notification = new Notification(Piwik::translate('CostAnalytics_CostAdded'));
             $notification->context = Notification::CONTEXT_SUCCESS;
@@ -173,5 +174,123 @@ class Controller extends PluginController
         return $this->renderTemplate('viewCosts', [
             'idSite' => $this->idSite,
         ]);
+    }
+
+    /**
+     * Manage costs - list all costs with edit/delete options
+     */
+    public function manageCosts()
+    {
+        Piwik::checkUserHasAdminAccess($this->idSite);
+
+        $sitesWithAdminAccess = SitesManagerAPI::getInstance()->getSitesWithAdminAccess();
+        $targetIdSite = Common::getRequestVar('target_idsite', $this->idSite, 'int');
+
+        // Verify user has admin access to target site
+        Piwik::checkUserHasAdminAccess($targetIdSite);
+
+        $model = new Model();
+        $costs = $model->getAllCostsForSite($targetIdSite, 500, 0);
+        $totalCount = $model->countCostsForSite($targetIdSite);
+
+        return $this->renderTemplate('manageCosts', [
+            'costs' => $costs,
+            'totalCount' => $totalCount,
+            'channelTypes' => Model::$channelTypes,
+            'idSite' => $this->idSite,
+            'targetIdSite' => $targetIdSite,
+            'sitesWithAdminAccess' => $sitesWithAdminAccess,
+        ]);
+    }
+
+    /**
+     * Edit cost form
+     */
+    public function editCost()
+    {
+        Piwik::checkUserHasAdminAccess($this->idSite);
+
+        $idCost = Common::getRequestVar('idCost', 0, 'int');
+
+        $model = new Model();
+        $cost = $model->getCost($idCost);
+
+        if (!$cost || $cost['idsite'] != $this->idSite) {
+            throw new \Exception(Piwik::translate('CostAnalytics_CostNotFound'));
+        }
+
+        return $this->renderTemplate('editCost', [
+            'cost' => $cost,
+            'channelTypes' => Model::$channelTypes,
+            'idSite' => $this->idSite,
+        ]);
+    }
+
+    /**
+     * Handle cost update
+     */
+    public function updateCost()
+    {
+        Piwik::checkUserHasAdminAccess($this->idSite);
+
+        $notification = null;
+
+        try {
+            $idCost = Common::getRequestVar('idCost', 0, 'int');
+            $channelType = Common::getRequestVar('channel_type', '', 'string');
+            $costDate = Common::getRequestVar('cost_date', '', 'string');
+            $costAmount = Common::getRequestVar('cost_amount', 0, 'float');
+            $currency = Common::getRequestVar('currency', 'USD', 'string');
+            $campaignName = Common::getRequestVar('campaign_name', '', 'string');
+            $description = Common::getRequestVar('description', '', 'string');
+
+            if (empty($channelType) || empty($costDate) || $costAmount <= 0) {
+                throw new \Exception(Piwik::translate('CostAnalytics_InvalidInput'));
+            }
+
+            $api = API::getInstance();
+            $api->updateCost($this->idSite, $idCost, $channelType, $costDate, $costAmount, $currency, $campaignName, $description);
+
+            $notification = new Notification(Piwik::translate('CostAnalytics_CostUpdated'));
+            $notification->context = Notification::CONTEXT_SUCCESS;
+        } catch (\Exception $e) {
+            $notification = new Notification($e->getMessage());
+            $notification->context = Notification::CONTEXT_ERROR;
+        }
+
+        if ($notification) {
+            Notification\Manager::notify('CostAnalytics_UpdateResult', $notification);
+        }
+
+        $this->redirectToIndex('CostAnalytics', 'manageCosts');
+    }
+
+    /**
+     * Handle cost deletion
+     */
+    public function deleteCostAction()
+    {
+        Piwik::checkUserHasAdminAccess($this->idSite);
+
+        $notification = null;
+
+        try {
+            $idCost = Common::getRequestVar('idCost', 0, 'int');
+
+            $api = API::getInstance();
+            $api->deleteCost($this->idSite, $idCost);
+
+            $notification = new Notification(Piwik::translate('CostAnalytics_CostDeleted'));
+            $notification->context = Notification::CONTEXT_SUCCESS;
+        } catch (\Exception $e) {
+            $notification = new Notification($e->getMessage());
+            $notification->context = Notification::CONTEXT_ERROR;
+        }
+
+        if ($notification) {
+            Notification\Manager::notify('CostAnalytics_DeleteResult', $notification);
+        }
+
+        $this->redirectToIndex('CostAnalytics', 'manageCosts');
     }
 }

@@ -1,0 +1,87 @@
+{% extends 'admin.twig' %}
+
+{% set title %}{{ 'CostAnalytics_ManageCosts'|translate }}{% endset %}
+
+{% block content %}
+<div class="costAnalyticsManage">
+    <h2>{{ 'CostAnalytics_ManageCosts'|translate }}</h2>
+
+    <p class="description">
+        {{ 'CostAnalytics_ManageCostsDescription'|translate }}
+    </p>
+
+    <form method="get" action="{{ linkTo({'module': 'CostAnalytics', 'action': 'manageCosts'}) }}" class="form-inline" style="margin-bottom: 20px;">
+        <input type="hidden" name="module" value="CostAnalytics">
+        <input type="hidden" name="action" value="manageCosts">
+        <input type="hidden" name="idSite" value="{{ idSite }}">
+        <div class="form-group">
+            <label for="target_idsite" style="margin-right: 10px;">{{ 'CostAnalytics_FilterByWebsite'|translate }}:</label>
+            <select name="target_idsite" id="target_idsite" class="form-control" onchange="this.form.submit()" style="max-width: 300px;">
+                {% for site in sitesWithAdminAccess %}
+                    <option value="{{ site.idsite }}" {% if site.idsite == targetIdSite %}selected{% endif %}>
+                        {{ site.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    {% if costs is empty %}
+        <div class="alert alert-info">
+            {{ 'CostAnalytics_NoCostsFound'|translate }}
+        </div>
+    {% else %}
+        <p>{{ 'CostAnalytics_TotalCostEntries'|translate }}: <strong>{{ totalCount }}</strong></p>
+
+        <table class="dataTable entityTable" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>{{ 'CostAnalytics_CostDate'|translate }}</th>
+                    <th>{{ 'CostAnalytics_ChannelType'|translate }}</th>
+                    <th>{{ 'CostAnalytics_CampaignName'|translate }}</th>
+                    <th>{{ 'CostAnalytics_Description'|translate }}</th>
+                    <th style="text-align: right;">{{ 'CostAnalytics_CostAmount'|translate }}</th>
+                    <th>{{ 'CostAnalytics_Currency'|translate }}</th>
+                    <th style="text-align: center;">{{ 'General_Actions'|translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cost in costs %}
+                <tr>
+                    <td>{{ cost.cost_date }}</td>
+                    <td>{{ channelTypes[cost.channel_type]|default(cost.channel_type) }}</td>
+                    <td>{{ cost.campaign_name|default('-') }}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ cost.description }}">
+                        {{ cost.description|default('-') }}
+                    </td>
+                    <td style="text-align: right;">{{ cost.cost_amount|number_format(2) }}</td>
+                    <td>{{ cost.currency }}</td>
+                    <td style="text-align: center; white-space: nowrap;">
+                        <a href="{{ linkTo({'module': 'CostAnalytics', 'action': 'editCost', 'idCost': cost.idcost, 'idSite': targetIdSite}) }}" class="btn btn-sm" title="{{ 'General_Edit'|translate }}">
+                            <span class="icon-edit"></span>
+                        </a>
+                        <form method="post" action="{{ linkTo({'module': 'CostAnalytics', 'action': 'deleteCostAction', 'idSite': targetIdSite}) }}" style="display: inline;">
+                            <input type="hidden" name="idCost" value="{{ cost.idcost }}">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('{{ 'CostAnalytics_ConfirmDelete'|translate|e('js') }}');" title="{{ 'General_Delete'|translate }}">
+                                <span class="icon-delete"></span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <div style="margin-top: 20px;">
+        <a href="{{ linkTo({'module': 'CostAnalytics', 'action': 'addCost'}) }}" class="btn btn-primary">
+            <span class="icon-add"></span>
+            {{ 'CostAnalytics_AddManualCost'|translate }}
+        </a>
+        <a href="{{ linkTo({'module': 'CostAnalytics', 'action': 'importCost'}) }}" class="btn">
+            <span class="icon-upload"></span>
+            {{ 'CostAnalytics_ImportCSV'|translate }}
+        </a>
+    </div>
+</div>
+{% endblock %}
