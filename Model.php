@@ -270,12 +270,12 @@ class Model
 
         $table = Common::prefixTable(self::$rawPrefix);
         try {
-            $columns = Db::fetchAll("SHOW COLUMNS FROM $table LIKE 'description'");
-            if (empty($columns)) {
-                Db::exec("ALTER TABLE $table ADD COLUMN `description` TEXT DEFAULT NULL AFTER `campaign_name`");
-            }
+            // Try to add the column - MySQL will error if it already exists
+            Db::exec("ALTER TABLE `$table` ADD COLUMN `description` TEXT DEFAULT NULL AFTER `campaign_name`");
         } catch (\Exception $e) {
-            // Table might not exist yet, ignore
+            // Error code 1060 = Duplicate column name (column already exists)
+            // Error code 1146 = Table doesn't exist
+            // Both are fine - either the column exists or table will be created later
         }
     }
 
