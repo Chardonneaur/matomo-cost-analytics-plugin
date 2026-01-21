@@ -17,7 +17,7 @@ class Menu extends PluginMenu
 {
     public function configureAdminMenu(MenuAdmin $menu)
     {
-        if (Piwik::isUserHasAdminAccess()) {
+        if (Piwik::isUserHasSomeAdminAccess()) {
             $menu->addMeasurableItem(
                 'CostAnalytics_CostManagement',
                 $this->urlForAction('index'),
