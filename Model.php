@@ -35,6 +35,9 @@ class Model
     public function __construct()
     {
         $this->table = Common::prefixTable(self::$rawPrefix);
+
+        // Ensure description column exists for upgraded installations
+        self::addDescriptionColumnIfMissing();
     }
 
     /**
@@ -255,8 +258,16 @@ class Model
     /**
      * Add description column for existing installations
      */
+    private static $migrationChecked = false;
+
     private static function addDescriptionColumnIfMissing()
     {
+        // Only run once per request
+        if (self::$migrationChecked) {
+            return;
+        }
+        self::$migrationChecked = true;
+
         $table = Common::prefixTable(self::$rawPrefix);
         try {
             $columns = Db::fetchAll("SHOW COLUMNS FROM $table LIKE 'description'");

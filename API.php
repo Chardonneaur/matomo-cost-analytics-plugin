@@ -341,9 +341,9 @@ class API extends PluginAPI
                 'channel_type' => $row['channel_type'],
                 'cost_date' => $costDate,
                 'cost_amount' => $costAmount,
-                'currency' => $row['currency'] ?? 'USD',
-                'campaign_name' => $row['campaign_name'] ?? null,
-                'description' => $row['description'] ?? null,
+                'currency' => isset($row['currency']) && $row['currency'] !== '' ? $row['currency'] : 'USD',
+                'campaign_name' => isset($row['campaign_name']) && $row['campaign_name'] !== '' ? $row['campaign_name'] : null,
+                'description' => isset($row['description']) && $row['description'] !== '' ? $row['description'] : null,
             ];
         }
 
