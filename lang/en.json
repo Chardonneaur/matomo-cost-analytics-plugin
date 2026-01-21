@@ -44,6 +44,9 @@
         "ValidChannelTypes": "Valid Channel Types",
         "SelectCSVFile": "Select CSV File",
 
+        "TargetWebsite": "Target Website",
+        "TargetWebsiteHelp": "Select the website to import costs for. You can import costs to any website you have admin access to.",
+
         "DeleteExistingCosts": "Replace existing costs for the same dates",
         "DeleteExistingCostsHelp": "If checked, existing cost entries for the same date range will be removed before importing.",
 

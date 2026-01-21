@@ -17,7 +17,23 @@
     </div>
 
     <form method="post" action="{{ linkTo({'module': 'CostAnalytics', 'action': 'uploadCsv'}) }}" enctype="multipart/form-data" class="form-horizontal">
-        <input type="hidden" name="idSite" value="{{ idSite }}">
+        <div class="form-group row">
+            <label class="col-sm-3 control-label" for="target_idsite">
+                {{ 'CostAnalytics_TargetWebsite'|translate }}
+            </label>
+            <div class="col-sm-9">
+                <select name="target_idsite" id="target_idsite" class="form-control" style="max-width: 400px;">
+                    {% for site in sitesWithAdminAccess %}
+                        <option value="{{ site.idsite }}" {% if site.idsite == idSite %}selected{% endif %}>
+                            {{ site.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <p class="form-text text-muted">
+                    {{ 'CostAnalytics_TargetWebsiteHelp'|translate }}
+                </p>
+            </div>
+        </div>
 
         <div class="form-group row">
             <label class="col-sm-3 control-label" for="cost_csv">

@@ -12,6 +12,7 @@ use Piwik\Common;
 use Piwik\Notification;
 use Piwik\Piwik;
 use Piwik\Plugin\Controller as PluginController;
+use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
 
 class Controller extends PluginController
 {
@@ -35,9 +36,12 @@ class Controller extends PluginController
     {
         Piwik::checkUserHasAdminAccess($this->idSite);
 
+        $sitesWithAdminAccess = SitesManagerAPI::getInstance()->getSitesWithAdminAccess();
+
         return $this->renderTemplate('importCost', [
             'channelTypes' => Model::$channelTypes,
             'idSite' => $this->idSite,
+            'sitesWithAdminAccess' => $sitesWithAdminAccess,
         ]);
     }
 
@@ -51,6 +55,12 @@ class Controller extends PluginController
         $notification = null;
 
         try {
+            // Get target site ID from form, default to current site
+            $targetIdSite = Common::getRequestVar('target_idsite', $this->idSite, 'int');
+
+            // Verify user has admin access to target site
+            Piwik::checkUserHasAdminAccess($targetIdSite);
+
             if (!isset($_FILES['cost_csv']) || $_FILES['cost_csv']['error'] !== UPLOAD_ERR_OK) {
                 throw new \Exception(Piwik::translate('CostAnalytics_NoFileUploaded'));
             }
@@ -65,7 +75,7 @@ class Controller extends PluginController
             $deleteExisting = Common::getRequestVar('delete_existing', 0, 'int') === 1;
 
             $api = API::getInstance();
-            $result = $api->importCostsFromCSV($this->idSite, $csvData, $deleteExisting);
+            $result = $api->importCostsFromCSV($targetIdSite, $csvData, $deleteExisting);
 
             if ($result['success']) {
                 $message = Piwik::translate('CostAnalytics_ImportSuccess', [$result['imported']]);

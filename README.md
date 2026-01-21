@@ -5,6 +5,7 @@ Import marketing cost data via CSV and calculate ROI metrics for your acquisitio
 ## Features
 
 - **CSV Import**: Upload cost data in bulk via CSV files
+- **Per-Website Import**: Import costs to any website you have admin access to, not just the current site
 - **Manual Entry**: Add individual cost entries through the admin interface
 - **Channel Mapping**: Costs are mapped to Matomo's acquisition channels (Direct, Search, Social, Campaigns, Websites)
 - **ROI Calculation**: Automatic ROI calculation based on goal revenue: `ROI = ((Revenue - Cost) / Cost) × 100`
@@ -23,7 +24,12 @@ Import marketing cost data via CSV and calculate ROI metrics for your acquisitio
 
 1. Go to **Administration > Measurables > Cost Management**
 2. Click **Import CSV**
-3. Upload your CSV file
+3. **Select the target website** from the dropdown (you can import to any site you have admin access to)
+4. Upload your CSV file
+5. Optionally check "Replace existing costs" to overwrite costs for the same date range
+6. Click **Upload**
+
+> **Tip**: The website selector allows you to import costs for multiple websites without switching between them. Simply select the target website, upload the CSV, and repeat for other sites.
 
 #### CSV Format
 
